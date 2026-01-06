@@ -11,7 +11,7 @@ function computeTotals(items = [], taxPercent = 0){
         (s, it) => s + (Number(it.qty || 0) * Number(it.unitPrice || 0)),
         0
     );
-    const tax = (subTotal * Number(taxPercent || 0)) / 100;
+    const tax = (subtotal * Number(taxPercent || 0)) / 100;
     const total = subtotal + tax;
     return { subtotal, tax, total };
 } // computes subtotal, tax, total  
@@ -221,7 +221,11 @@ export async function getInvoices(req, res){
                 { invoiceNumber: { $regex: search, $options: "i" } },
             ];
         }
-        const invoices = (await Invoice.find(q)).sort({ createdAt: -1 }).lean();
+        const invoices = await Invoice
+  .find(q)
+  .sort({ createdAt: -1 })
+  .lean();
+
         return res.status(200).json({ success: true, data: invoices });
     }
 

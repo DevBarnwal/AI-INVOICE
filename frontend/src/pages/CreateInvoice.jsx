@@ -191,21 +191,26 @@ export default function CreateInvoice() {
   const isEditing = Boolean(id && id !== "new");
 
   // Clerk auth hooks
-  const { getToken, isSignedIn } = useAuth();
+const { getToken, isLoaded, isSignedIn } = useAuth();
 
-  // helper to obtain token with a retry
-  const obtainToken = useCallback(async () => {
-    if (typeof getToken !== "function") return null;
-    try {
-      let token = await getToken({ template: "default" }).catch(() => null);
-      if (!token) {
-        token = await getToken({ forceRefresh: true }).catch(() => null);
-      }
-      return token;
-    } catch (err) {
-      return null;
-    }
-  }, [getToken]);
+const obtainToken = useCallback(async () => {
+  // 🚨 MUST guard loading state
+  if (!isLoaded) {
+    return null;
+  }
+
+  // 🚨 MUST guard auth state
+  if (!isSignedIn) {
+    return null;
+  }
+
+  try {
+    return await getToken(); // no template needed
+  } catch (err) {
+    console.warn("Failed to get Clerk token:", err);
+    return null;
+  }
+}, [getToken, isLoaded, isSignedIn]);
 
   // invoice & items state
   function buildDefaultInvoice() {
@@ -334,7 +339,7 @@ export default function CreateInvoice() {
         if (token) headers["Authorization"] = `Bearer ${token}`;
 
         const res = await fetch(
-          `${API_BASE}/api/invoice?invoiceNumber=${encodeURIComponent(
+          `${API_BASE}/api/invoices?invoiceNumber=${encodeURIComponent(
             candidate
           )}`,
           { method: "GET", headers }
@@ -527,7 +532,7 @@ export default function CreateInvoice() {
           const headers = { Accept: "application/json" };
           if (token) headers["Authorization"] = `Bearer ${token}`;
 
-          const res = await fetch(`${API_BASE}/api/invoice/${id}`, {
+          const res = await fetch(`${API_BASE}/api/invoices/${id}`, {
             method: "GET",
             headers,
           });
@@ -690,8 +695,8 @@ export default function CreateInvoice() {
 
       const endpoint =
         isEditing && invoice.id
-          ? `${API_BASE}/api/invoice/${invoice.id}`
-          : `${API_BASE}/api/invoice`;
+          ? `${API_BASE}/api/invoices/${invoice.id}`
+          : `${API_BASE}/api/invoices`;
       const method = isEditing && invoice.id ? "PUT" : "POST";
 
       // try to obtain Clerk token; if present include Authorization

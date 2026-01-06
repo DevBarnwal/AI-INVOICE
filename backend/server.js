@@ -16,7 +16,7 @@ const port = 4000;
 
 //MIDDLEWARES
 app.use(cors({
-    origin: 'http://localhost:5173/',
+    origin: 'http://localhost:5173',
     credentials: true,
 }));
 app.use(clerkMiddleware());

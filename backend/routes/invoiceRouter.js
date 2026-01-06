@@ -8,9 +8,11 @@ const invoiceRouter = express.Router();
 invoiceRouter.use(clerkMiddleware());
 
 invoiceRouter.get("/", getInvoices);
-invoiceRouter.post("/", getInvoiceById);
+invoiceRouter.get("/", getInvoiceById);
 invoiceRouter.post("/", createInvoice);
 invoiceRouter.put("/:id", updateInvoice);
 invoiceRouter.delete("/:id", deleteInvoice);
 
 export default invoiceRouter;
+
+
