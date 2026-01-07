@@ -4,7 +4,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server"
   },
   "author": "",
   "license": "ISC",
@@ -24,3 +24,5 @@
     "validator": "^13.15.26"
   }
 }
+
+

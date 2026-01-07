@@ -3,7 +3,7 @@ import { businessProfileStyles, iconColors, customStyles } from '../assets/dummy
 import { useAuth, useUser } from '@clerk/clerk-react'
 
 /* ---------- API BASE ---------- */
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://ai-invoice-psi.vercel.app";
 
 //icons
 const UploadIcon = ({ className = "w-5 h-5" }) => (
